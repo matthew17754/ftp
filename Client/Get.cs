@@ -23,7 +23,7 @@ namespace Client
 
         public static int List(ref FtpClient client, Commands.List directory)
         {
-            Console.WriteLine("list");
+            Console.WriteLine("ooga booga");
             return 0;
         }
     }
