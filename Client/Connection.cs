@@ -51,6 +51,22 @@ namespace Client
                         Console.WriteLine(ex.Message);
                     return -1;
                 }
+
+                Console.WriteLine("\n\nAnother one!\n\n\n");
+                try
+                {
+                    FtpListItem[] items = client.GetListing("/Test/two new folders");
+                    foreach (FtpListItem item in items)
+                        Console.WriteLine(item.Name);
+                }
+                catch (Exception ex)
+                {
+                    if (ex.InnerException != null)
+                        Console.WriteLine(ex.InnerException.Message);
+                    else
+                        Console.WriteLine(ex.Message);
+                    return -1;
+                }
                 Console.WriteLine("Successfully connected to server!");
                 return 1;
             }

@@ -4,6 +4,8 @@ namespace Client
 {
     public abstract class Commands
     {
+        public string? localPath;
+        public string? remotePath;
         [Verb("connect", HelpText = "Connect to a remote ip address")]
         public class Connect
         {
@@ -20,6 +22,14 @@ namespace Client
             public string? Local { get; set; }
 
             [Option('r', "remote", Required = false, HelpText = "List directories & files on remote servers")]
+            public string? Remote { get; set; }
+        }
+
+        [Verb("cd", HelpText = "Change the current directory")]
+        public class ChangeDirectory
+        {
+            [Value(0, MetaName = "change directory", HelpText = "Change the current local or remote directory")]
+
             public string? Remote { get; set; }
         }
 
