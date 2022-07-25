@@ -8,28 +8,29 @@ namespace Client
 {
     public class Program
     {
-        //public static FtpClient? Client { get; set; }
+        public struct FilePath
+        {
+            public string Local { get; set; }
+            public string Remote { get; set; }
+        }
 
         static void Main(string[] args)
         {
-           FtpClient client = new FtpClient();
+            FtpClient client = new ();
+            FilePath path = new ();
+            Logger? logger = null;
+
+            path.Local = "/"; //assign the default local path here
+            path.Remote = "/";
 
             Console.WriteLine("FTP Client v1.0");
-
             Console.WriteLine(FiggleFonts.Big.Render("FTP. NET"));
-
-            /*
-            if(Connection.Connect(ref client))
-                Console.WriteLine("Successfully connected to server!");
-            else
-                Console.WriteLine("ERROR: did not connect to server!");
-            */
 
             while (true)
             {
                 Console.Write("> ");
                 args = Console.ReadLine().Split(' ');
-
+                logger?.Log(args);
                 var types = Assembly.GetExecutingAssembly().GetTypes().Where(t => t.GetCustomAttribute<VerbAttribute>() != null).ToArray();
 
 
@@ -38,10 +39,10 @@ namespace Client
                 Parser.Default.ParseArguments<Commands.Connect, Commands.List, Commands.Get, Commands.Disconnect, Commands.Quit,
                     Commands.Put, Commands.CreateDirectory, Commands.Delete, Commands.Permissions, Commands.Copy, Commands.Save,
                     Commands.Rename>(args).MapResult(
-                (Commands.Connect opts) => Connection.Connect(ref client, opts),
-                (Commands.List opts) => Get.List(ref client, opts),
+                (Commands.Connect opts) => Connection.Connect(ref client, ref logger, opts),
+                (Commands.List opts) => Get.List(ref client, opts, in path, args),
                 (Commands.Get opts) => Get.File(ref client, opts),
-                (Commands.Disconnect opts) => Connection.Disconnect(ref client),
+                (Commands.Disconnect opts) => Connection.Disconnect(ref client, ref logger),
                 (Commands.Quit opts) => Connection.Exit(),
                 (Commands.Put opts) => Put.File(ref client, opts),
                 (Commands.CreateDirectory opts) => Put.Create(ref client, opts),
@@ -52,16 +53,6 @@ namespace Client
                 (Commands.Rename opts) => Modify.Rename(ref client, opts),
                 errs => 1);
             }
-
-            /*
-            Console.WriteLine(client.Credentials.UserName);
-            Console.WriteLine(client.Credentials.Password);
-            Console.WriteLine(client.Host + ":" + client.Port);
-
-            
-            Logger logger = new Logger(client.Credentials.UserName);
-            logger.Log("Hello World!");
-            */
         }
     }
 }
