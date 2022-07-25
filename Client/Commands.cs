@@ -29,6 +29,9 @@ namespace Client
             [Value(0, MetaName = "file", HelpText = "File to get from remote server")]
             public string? File { get; set; }
 
+            [Value(1, MetaName = "local", HelpText = "Local file path to save files.")]
+            public string LocalPath { get; set; } = string.Empty;
+
             [Option('m', "multiple", Required = false, HelpText = "Get multiple files from remote")]
             public IEnumerable<string>? Files { get; set; }
         }
@@ -68,7 +71,17 @@ namespace Client
         [Verb("perm", HelpText = "Make a new directory")]
         public class Permissions
         {
-            // research flag parameters
+            [Value(0, MetaName = "File Name", HelpText = "File that needs permissions changed")]
+            public string FilePath { get; set; } = string.Empty;
+
+            [Value(1, MetaName ="onr", HelpText = "Defines Permissions for the owner of the file.", Max = 7, Min = 0)]
+            public int Owner { get; set; }
+
+            [Value(2, MetaName = "grp", HelpText = "Defines permission for groups.", Max = 7, Min = 0)]
+            public int Group { get; set; }
+
+            [Value(3, MetaName = "othr", HelpText = "Defines permissions for everyone not a owner or in the group.", Max = 7, Min = 0)]
+            public int Others { get; set; }
         }
 
         [Verb("cp", HelpText = "Copy directories on remote server")]
@@ -81,17 +94,20 @@ namespace Client
         [Verb("save", HelpText = "Save connection information")]
         internal class Save { }
 
-        [Verb("rename", HelpText = "Save connection information")]
+        [Verb("rename", HelpText = "Rename file")]
         public class Rename
         {
             [Value(0, MetaName = "default", HelpText = "File to rename on remote server (default)")]
-            public string Name { get; set; }
+            public string OldName { get; set; } = String.Empty;
+
+            [Value(1, MetaName = "newname", HelpText = "File rename value.")]
+            public string NewName { get; set; } = String.Empty;
 
             [Option('l', "local", Required = false, HelpText = "Rename file on local machine")]
-            public string? Local { get; set; }
+            public string Local { get; set; } = String.Empty;
 
             [Option('r', "remote", Required = false, HelpText = "Rename file on remote server")]
-            public string? Remote { get; set; }
+            public string? Remote { get; set; } = String.Empty;
         }
     }
 }
